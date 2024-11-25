@@ -5,7 +5,7 @@ import re
 from typing import Any, Dict, Mapping, Optional, Sequence, Tuple
 
 from .api import Api
-from .capability import ATTRIBUTE_OFF_VALUES, ATTRIBUTE_ON_VALUES, Attribute, Capability
+from .capability import ATTRIBUTE_OFF_VALUES, ATTRIBUTE_ON_VALUES, CAPABILITIES_ATTRIBUTES_ORIGINAL_NAMES, Attribute, Capability
 from .entity import Entity
 
 DEVICE_TYPE_OCF = "OCF"
@@ -58,6 +58,7 @@ class Command:
     set_color = "setColor"
     set_color_temperature = "setColorTemperature"
     set_cooling_setpoint = "setCoolingSetpoint"
+    set_dryer_dry_level = "setDryerDryLevel"
     set_fan_oscillation_mode = "setFanOscillationMode"
     set_fan_mode = "setFanMode"
     set_fan_speed = "setFanSpeed"
@@ -776,9 +777,14 @@ class DeviceStatus(DeviceStatusBase):
         self._components.clear()
         for component_id, component in data["components"].items():
             attributes = {}
-            for capabilities in component.values():
-                for attribute, value in capabilities.items():
-                    attributes[attribute] = Status(
+            for capability, capability_content in component.items():
+                for attribute, value in capability_content.items():
+                    attributeName = attribute
+
+                    if capability in CAPABILITIES_ATTRIBUTES_ORIGINAL_NAMES and attribute in CAPABILITIES_ATTRIBUTES_ORIGINAL_NAMES[capability]:
+                        attributeName = CAPABILITIES_ATTRIBUTES_ORIGINAL_NAMES[capability][attribute]
+
+                    attributes[attributeName] = Status(
                         value.get("value"), value.get("unit"), value.get("data")
                     )
             if component_id == "main":

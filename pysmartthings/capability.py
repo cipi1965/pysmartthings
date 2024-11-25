@@ -4,6 +4,12 @@ Defines SmartThings capabilities and attributes.
 https://smartthings.developer.samsung.com/docs/api-ref/capabilities.html
 """
 
+CAPABILITIES_ATTRIBUTES_ORIGINAL_NAMES = {
+    "custom.dryerWrinklePrevent": {
+        "operatingState": "dryerWrinklePreventOperatingState",
+    },
+}
+
 CAPABILITIES_TO_ATTRIBUTES = {
     "accelerationSensor": ["acceleration"],
     "activityLightingMode": ["lightingMode"],
@@ -24,6 +30,7 @@ CAPABILITIES_TO_ATTRIBUTES = {
     "colorControl": ["color", "hue", "saturation"],
     "colorTemperature": ["colorTemperature"],
     "contactSensor": ["contact"],
+    "custom.dryerDryLevel": ["dryerDryLevel"],
     "demandResponseLoadControl": ["drlcStatus"],
     "dishwasherMode": ["dishwasherMode"],
     "dishwasherOperatingState": [
@@ -40,6 +47,7 @@ CAPABILITIES_TO_ATTRIBUTES = {
         "dryerJobState",
         "completionTime",
     ],
+    "custom.dryerWrinklePrevent": ["dryerWrinklePreventOperatingState", "dryerWrinklePrevent"],
     "dustSensor": ["fineDustLevel", "dustLevel"],
     "energyMeter": ["energy"],
     "equivalentCarbonDioxideMeasurement": ["equivalentCarbonDioxideMeasurement"],
@@ -101,9 +109,29 @@ CAPABILITIES_TO_ATTRIBUTES = {
     "rapidCooling": ["rapidCooling"],
     "refrigerationSetpoint": ["refrigerationSetpoint"],
     "relativeHumidityMeasurement": ["humidity"],
+    "remoteControlStatus": ["remoteControlEnabled"],
     "robotCleanerCleaningMode": ["robotCleanerCleaningMode"],
     "robotCleanerMovement": ["robotCleanerMovement"],
     "robotCleanerTurboMode": ["robotCleanerTurboMode"],
+    "samsungce.dryerCycle": [
+        "dryerCycle",
+        "supportedCycles",
+        "specializedFunctionClassification",
+        "referenceTable",
+    ],
+    "samsungce.dryerDryingTime": [
+        "dryingTime",
+        "supportedDryingTime"
+    ],
+    "samsungce.dryerOperatingState": [
+        "operatingState",
+        "dryerJobState",
+        "progress",
+        "remainingTime",
+        "remainingTimeStr",
+    ],
+    "samsungce.dryerAutoCycleLink": ["dryerAutoCycleLink"],
+    "samsungce.kidsLock": ["lockState"],
     "signalStrength": ["lqi", "rssi"],
     "smokeDetector": ["smoke"],
     "soundSensor": ["sound"],
@@ -185,6 +213,9 @@ class Capability:
     dishwasher_operating_state = "dishwasherOperatingState"
     door_control = "doorControl"
     dryer_mode = "dryerMode"
+    dryer_auto_cycle_link = "samsungce.dryerAutoCycleLink"
+    dryer_dry_level = "custom.dryerDryLevel"
+    dryer_drying_time = "samsungce.dryerDryingTime"
     dryer_operating_state = "dryerOperatingState"
     dust_sensor = "dustSensor"
     energy_meter = "energyMeter"
@@ -198,6 +229,7 @@ class Capability:
     gas_meter = "gasMeter"
     illuminance_measurement = "illuminanceMeasurement"
     infrared_level = "infraredLevel"
+    kids_lock = "samsungce.kidsLock"
     lock = "lock"
     media_input_source = "mediaInputSource"
     media_playback = "mediaPlayback"
@@ -216,6 +248,7 @@ class Capability:
     rapid_cooling = "rapidCooling"
     refrigeration_setpoint = "refrigerationSetpoint"
     relative_humidity_measurement = "relativeHumidityMeasurement"
+    remote_control_status = "remoteControlStatus"
     robot_cleaner_cleaning_mode = "robotCleanerCleaningMode"
     robot_cleaner_movement = "robotCleanerMovement"
     robot_cleaner_turbo_mode = "robotCleanerTurboMode"
@@ -245,6 +278,7 @@ class Capability:
     window_shade = "windowShade"
     window_shade_level = "windowShadeLevel"
     window_shade_preset = "windowShadePreset"
+    dryer_wrinkle_prevent = "custom.dryerWrinklePrevent"
 
 
 class Attribute:
@@ -275,8 +309,13 @@ class Attribute:
     dmv = "dmv"
     door = "door"
     drlc_status = "drlcStatus"
+    dryer_auto_cycle_link = "dryerAutoCycleLink"
+    dryer_dry_level = "dryerDryLevel"
     dryer_job_state = "dryerJobState"
     dryer_mode = "dryerMode"
+    dryer_wrinkle_prevent = "dryerWrinklePrevent"
+    dryer_wrinkle_prevent_operating_state = "dryerWrinklePreventOperatingState"
+    drying_time = "dryingTime"
     dust_level = "dustLevel"
     energy = "energy"
     equivalent_carbon_dioxide_measurement = "equivalentCarbonDioxideMeasurement"
@@ -302,6 +341,7 @@ class Attribute:
     input_source = "inputSource"
     level = "level"
     lighting_mode = "lightingMode"
+    lock_state = "lockState"
     lock = "lock"
     lqi = "lqi"
     machine_state = "machineState"
@@ -335,6 +375,7 @@ class Attribute:
     progress = "progress"
     rapid_cooling = "rapidCooling"
     refrigeration_setpoint = "refrigerationSetpoint"
+    remote_control_enabled = "remoteControlEnabled"
     robot_cleaner_cleaning_mode = "robotCleanerCleaningMode"
     robot_cleaner_movement = "robotCleanerMovement"
     robot_cleaner_turbo_mode = "robotCleanerTurboMode"
@@ -348,6 +389,7 @@ class Attribute:
     supported_ac_fan_modes = "supportedAcFanModes"
     supported_ac_modes = "supportedAcModes"
     supported_button_values = "supportedButtonValues"
+    supported_drying_time = "supportedDryingTime"
     supported_fan_oscillation_modes = "supportedFanOscillationModes"
     supported_input_sources = "supportedInputSources"
     supported_machine_states = "supportedMachineStates"
@@ -380,11 +422,13 @@ class Attribute:
 ATTRIBUTE_ON_VALUES = {
     Attribute.acceleration: "active",
     Attribute.contact: "open",
+    Attribute.dryer_auto_cycle_link: "on",
     Attribute.filter_status: "replace",
     Attribute.motion: "active",
     Attribute.mute: "muted",
     Attribute.playback_shuffle: "enabled",
     Attribute.presence: "present",
+    Attribute.remote_control_enabled: "true",
     Attribute.sound: "detected",
     Attribute.switch: "on",
     Attribute.tamper: "detected",
@@ -395,11 +439,13 @@ ATTRIBUTE_ON_VALUES = {
 ATTRIBUTE_OFF_VALUES = {
     Attribute.acceleration: "inactive",
     Attribute.contact: "closed",
+    Attribute.dryer_auto_cycle_link: "off",
     Attribute.filter_status: "normal",
     Attribute.motion: "inactive",
     Attribute.mute: "unmuted",
     Attribute.playback_shuffle: "disabled",
     Attribute.presence: "not present",
+    Attribute.remote_control_enabled: "false",
     Attribute.sound: "not detected",
     Attribute.switch: "off",
     Attribute.tamper: "clear",
